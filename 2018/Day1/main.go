@@ -6,12 +6,13 @@ import (
 	"os"
 	"strings"
 	"io/ioutil"
-	)
+	"time"
+)
 
 var (
 	finalInput 	int
 	finData		[]int
-	foundInput 	[]int
+	foundInput = make(map[int]bool)
 )
 
 func check(err error) {
@@ -19,16 +20,6 @@ func check(err error) {
 		fmt.Println(err)
 		os.Exit(2)
 	}
-}
-
-func contains(x int) bool {
-	for _, v := range foundInput {
-		if x == v {
-			return true
-		}
-	}
-
-	return false
 }
 
 func readFile(filename string) string {
@@ -62,22 +53,22 @@ func part1() {
 }
 
 func part2() {
+	t := time.Now()
 	finalInput = 0
 
 	Loop:
 		for {
 			for _, val := range finData {
 				finalInput += val
-				ok := contains(finalInput)
-				foundInput = append(foundInput, finalInput)
-
-				if ok {
+				if foundInput[finalInput] {
 					break Loop
 				}
+				foundInput[finalInput] = true
 			}
 		}
 
 	fmt.Printf("Found final input twice: %d\n", finalInput)
+	fmt.Println(time.Since(t))
 }
 
 func main() {
